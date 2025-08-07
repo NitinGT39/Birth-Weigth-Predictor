@@ -27,6 +27,10 @@ def get_cleaned_data(form_data):
 def home():
     return render_template("index.html")
 
+@app.route("/Hello",methods = ['GET'])
+def hello():
+    return "Hello World"
+
 # define your end points
 
 @app.route("/predict",methods = ['POST'])

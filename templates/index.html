@@ -5,8 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Birth Rate Form</title>
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #4a4a4a;
+            --text-secondary: #666;
+            --text-label: #333;
+            --border-color: #e1e5e9;
+            --shadow: rgba(0, 0, 0, 0.2);
+            --success-bg: rgba(39, 174, 96, 0.1);
+            --error-bg: rgba(231, 76, 60, 0.1);
+            --button-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg: rgba(30, 30, 50, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-label: #e0e0e0;
+            --border-color: #444;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --success-bg: rgba(39, 174, 96, 0.2);
+            --error-bg: rgba(231, 76, 60, 0.2);
+            --button-gradient: linear-gradient(135deg, #4a90e2 0%, #357ab8 100%);
+        }
+
         body {
-            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background: var(--bg-gradient);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
@@ -14,80 +40,311 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow);
+            backdrop-filter: blur(10px);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .theme-toggle .icon {
+            font-size: 24px;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .theme-toggle:hover .icon {
+            transform: rotate(180deg);
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         h1 {
-            margin-top: 50px;
-            color: #791b7d;
+            margin: 0 0 20px 0;
+            color: var(--text-primary);
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: color 0.3s ease;
         }
 
-        form {
-            background-color: rgb(248, 194, 244);
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            width: 300px;
-            margin-top: 20px;
-            margin-bottom: 50px;
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
         }
 
         label {
-            font-weight: 500;
-            margin-top: 10px;
+            font-weight: 600;
+            margin-bottom: 8px;
             display: block;
-            color: #333;
+            color: var(--text-label);
+            font-size: 0.95em;
+            transition: color 0.3s ease;
         }
 
         input {
             width: 100%;
-            padding: 8px 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
             font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-primary);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        [data-theme="dark"] input {
+            background: rgba(50, 50, 70, 0.9);
+            color: var(--text-primary);
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background-color: #4a90e2;
+            padding: 15px;
+            background: var(--button-gradient);
             color: white;
             font-size: 16px;
+            font-weight: 600;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
         button:hover {
-            background-color: #357ab8;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .error {
+            color: #e74c3c;
+            background: var(--error-bg);
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .success {
+            color: #27ae60;
+            background: var(--success-bg);
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .form-section {
+                padding: 25px;
+                margin: 0 15px;
+            }
+
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                padding: 10px;
+                width: 45px;
+                height: 45px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Predict Birth Weight of Your Child</h1> 
-    <form action="/predict" method="POST">
-        <label>Gestation</label>
-        <input name="gestation" type="number">
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <div class="icon">��</div>
+    </div>
 
-        <label>Parity</label>
-        <input name="parity" type="number">
+    <div class="container">
+        <div class="header-section">
+            <h1>👶 Predict Your Baby's Birth Weight ��</h1>
+            <p class="subtitle">Enter your details below to get an accurate prediction of your baby's birth weight</p>
+        </div>
 
-        <label>Age</label>
-        <input name="age" type="number">
+        <div class="form-section">
+            <form action="/predict" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>�� Gestation (days)</label>
+                        <input name="gestation" type="number" step="any" required placeholder="Enter gestation period in days">
+                    </div>
 
-        <label>Height</label>
-        <input name="height" type="number">
+                    <div class="form-group">
+                        <label>👶 Parity</label>
+                        <input name="parity" type="number" step="1" required placeholder="Number of previous births">
+                    </div>
 
-        <label>Weight</label>
-        <input name="weight" type="number">
+                    <div class="form-group">
+                        <label>�� Age (years)</label>
+                        <input name="age" type="number" step="any" required placeholder="Mother's age">
+                    </div>
 
-        <label>Smoke</label>
-        <input name="smoke" type="number">
+                    <div class="form-group">
+                        <label>📏 Height (inches)</label>
+                        <input name="height" type="number" step="any" required placeholder="Mother's height">
+                    </div>
 
-        <button type="submit">Predict Birth Weight</button>
-    </form>
-    <h3>Predicted Birth Weight: {{prediction}}</h3>
+                    <div class="form-group">
+                        <label>⚖️ Weight (ounces)</label>
+                        <input name="weight" type="number" step="any" required placeholder="Mother's weight in ounces">
+                    </div>
+
+                    <div class="form-group">
+                        <label>�� Smoke (0=No, 1=Yes)</label>
+                        <input name="smoke" type="number" step="any" required placeholder="Smoking status">
+                    </div>
+                </div>
+
+                <button type="submit">🔮 Predict Birth Weight</button>
+            </form>
+        </div>
+
+        <div class="result-section">
+            {% if error %}
+                <div class="result-card error">
+                    <h3>❌ Error: {{ error }}</h3>
+                </div>
+            {% endif %}
+
+            {% if prediction %}
+                <div class="result-card success">
+                    <h3>🎉 Predicted Birth Weight: {{ prediction }} ounces</h3>
+                    <p>Your baby is expected to be healthy and strong! 💪</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle .icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeToggle = document.querySelector('.theme-toggle .icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        });
+    </script>
 </body>
 </html>
